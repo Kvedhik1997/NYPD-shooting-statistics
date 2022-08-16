@@ -1,0 +1,60 @@
+---
+title: "Week 3 Assignment"
+author: "Vedhik Kodavatiganti"
+date: "2022-08-03"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data import
+
+  A dataset has been imported that contains a list of all the shootings in NYC dating back to 2006. It can be accessed via the following link.
+<https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv?accessType=DOWNLOAD>.
+
+The data set contains 25,5444 rows and 19 features, which are shown below
+```{r cars}
+shootings <- read.csv("https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv?accessType=DOWNLOAD")
+names(shootings)
+```
+
+## Tidy/Transform Data
+
+  The data set was cleaned and transformed. Unnecessary columns have been removed and a summary of the data is provided. 
+
+```{r pressure}
+tidy_shootings<- shootings[c("OCCUR_DATE","BORO","STATISTICAL_MURDER_FLAG","PERP_AGE_GROUP","PERP_SEX","PERP_RACE","VIC_AGE_GROUP","VIC_SEX","VIC_RACE")]
+summary(tidy_shootings)
+```
+
+## Visualizations and Analysis
+
+```{r visuals}
+ps<-setNames(aggregate(tidy_shootings$BORO, by=list(tidy_shootings$PERP_SEX), FUN=length), c('perp_sex','count'))
+ps
+barplot(ps$count, main="Perpetrator Gender",xlab = "Gender", ylab = "Counts", names.arg=ps$perp_sex)
+vs<-setNames(aggregate(tidy_shootings$BORO, by=list(tidy_shootings$VIC_SEX), FUN=length), c('vic_sex','count'))
+vs
+barplot(vs$count, main="Victim Gender",xlab = "Gender", ylab = "Counts", names.arg=vs$vic_sex)
+pr<-setNames(aggregate(tidy_shootings$BORO, by=list(tidy_shootings$PERP_RACE), FUN=length), c('perp_race','count'))
+pr
+barplot(pr$count, main="Perpetrator Race",xlab = "Race", ylab = "Counts", names.arg=pr$perp_race)
+vr<-setNames(aggregate(tidy_shootings$BORO, by=list(tidy_shootings$VIC_RACE), FUN=length), c('vic_race','count'))
+vr
+barplot(vr$count, main="Victim Race",xlab = "Race", ylab = "Counts", names.arg=vr$vic_race)
+
+```
+
+  It's interesting to see how this data can be visualized accross gender and race. These visuals indicate that men are more often the perpetrators and victims of shootings in New York by a large margin. In terms of race, the data shows that black people are more the perpetrators and victims of shootings in New York.
+
+## Conclusion
+
+  This was an interesting data exploration project where we were able to gain insights on New York historical shooting statistics. I analyzed this with regards to race and gender, finding that men and black people are most commonly the perpetrators and victims of shootings.However, we should be careful of inherent bias in this data.
+
+  Bias is often found in data analysis and can come from a  variety of sources. One potential area of bias in this data set is the data itself. The shootings were taken from police reports of the incident; however many fields for the perpetrator are null. This is likely due to not having caught the perpetrator, thus not having enough information. Another potential source of bias to look at is the location of the incident. Given how the data is presented, it looks like men and black people are indiscriminately perpetrating and being the victims of shootings; however location could also be a very informative factor. More analysis will need to be done to remove the bias in the data and come to conclusions on shootings in New York.
+
+
